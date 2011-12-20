@@ -1,5 +1,7 @@
 # Emacs Rails
 
+## Note: DO NOT USE
+
 This will probably take some time before it will be better than other available
 tools for working with Rails on Emacs.
 
