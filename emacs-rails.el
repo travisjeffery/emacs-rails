@@ -1,4 +1,4 @@
-(defun rails-calculate-file-type ()
+(defun rails-buffer-type-name ()
   "File type for current buffer."
   (interactive)
   ;; TODO: make filename relative to root of project
@@ -49,3 +49,26 @@
           "config-routes")
          ((string-match-p "\\<config/" filename)
           "config")))))
+
+(defun rails-buffer-type-name? (type-name)
+  (interactive)
+  (string-equal type-name (rails-buffer-type-name?)))
+
+(defun rails-substitute (string regexp replacement)
+  (interactive)
+  (when (string-match regexp string)
+    (replace-match replacement nil nil string)))
+
+(defun rails-related-file ()
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (cond
+     ((string-match-p "\\<config/environments/" filename)
+      (format "config/database.yml#%s" (file-name-sans-extension filename)))
+     ((string-match-p "\\<config/routes\.rb$" filename)
+      "config/database.yml")
+     ((string-match-p "\\<config/\\(application\\|environment\\)\.rb$" filename)
+      "config/routes.rb")
+     ((rails-buffer-type-name? "view-layout")
+      (rails-substitute (rails-substitute filename "/views/" "/controllers/") "/layouts/\\(\\(\\w\\|_\\|-\\|\\d\\)*\\)\..*$" "\\1_controller.rb")))))
+
